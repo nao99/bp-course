@@ -1,0 +1,9 @@
+# Directories
+.idea/
+target/
+
+# Files
+docker/docker-compose.local.yml
+docker/.env.local
+src/main/resources/application.yml
+BP-Course.iml

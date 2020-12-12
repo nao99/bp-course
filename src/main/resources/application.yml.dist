@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: 'BP-Course'
+
+  profiles:
+    active: 'prod'
+
+  datasource:
+    driver-class-name: 'org.postgresql.Driver'
+    url: 'jdbc:postgresql://localhost/db_name'
+    username: 'dbuser'
+    password: 'dbuser'
