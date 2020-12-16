@@ -4,6 +4,6 @@ target/
 
 # Files
 docker/docker-compose.local.yml
-docker/.env.local
+docker/.env
 src/main/resources/application.yml
 BP-Course.iml
