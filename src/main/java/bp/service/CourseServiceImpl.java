@@ -56,6 +56,14 @@ public class CourseServiceImpl implements CourseService {
      * {@inheritDoc}
      */
     @Override
+    public void saveCourse(@NonNull Course course) {
+        repository.save(course);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void deleteCourse(@NonNull Course course) {
         repository.delete(course);
     }
