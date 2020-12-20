@@ -89,6 +89,21 @@ public class CourseServiceImplTest {
     }
 
     /**
+     * Test for a {@link CourseServiceImpl#saveCourse(Course)}
+     */
+    @Test
+    public void saveCourse() {
+        // given
+        Course course = new Course("Mathematic", "Mathematic - it's a cool!");
+
+        // when / then
+        service.saveCourse(course);
+        Mockito
+            .verify(repositoryMock, Mockito.atMostOnce())
+            .save(course);
+    }
+
+    /**
      * Test for a {@link CourseServiceImpl#deleteCourse(Course)}
      */
     @Test

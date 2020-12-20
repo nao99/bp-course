@@ -33,6 +33,13 @@ public interface CourseService {
     Course createCourse(@NonNull String name, @Nullable String description);
 
     /**
+     * Saves a {@link Course}
+     *
+     * @param course a course to save
+     */
+    void saveCourse(@NonNull Course course);
+
+    /**
      * Deletes a {@link Course}
      *
      * @param course a course to delete
