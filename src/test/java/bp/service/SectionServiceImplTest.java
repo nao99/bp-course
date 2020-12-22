@@ -137,6 +137,21 @@ public class SectionServiceImplTest {
     }
 
     /**
+     * Test for a {@link SectionServiceImpl#saveSection(Section)}
+     */
+    @Test
+    public void saveSection() {
+        // given
+        Section section = new Section(1L, "Mathematic", "Mathematic - it's a cool!");
+
+        // when / then
+        service.saveSection(section);
+        Mockito
+            .verify(repositoryMock, Mockito.atMostOnce())
+            .save(section);
+    }
+
+    /**
      * Test for {@link SectionServiceImpl#deleteSection(Section)}
      */
     @Test

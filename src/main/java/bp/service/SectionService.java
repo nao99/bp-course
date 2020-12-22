@@ -50,6 +50,13 @@ public interface SectionService {
     ) throws SectionConstraintException;
 
     /**
+     * Saves a {@link Section}
+     *
+     * @param section a section to save
+     */
+    void saveSection(@NonNull Section section);
+
+    /**
      * Deletes a {@link Section}
      *
      * @param section a section to delete

@@ -1,6 +1,7 @@
 package bp.config;
 
 import bp.converter.StringToCourseConverter;
+import bp.converter.StringToSectionConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -23,13 +24,23 @@ public class MvcConfiguration implements WebMvcConfigurer {
     private final StringToCourseConverter stringToCourseConverter;
 
     /**
+     * String to section converter
+     */
+    @NonNull
+    private final StringToSectionConverter stringToSectionConverter;
+
+    /**
      * MvcConfiguration constructor
      *
      * @param stringToCourseConverter a string to course converter
      */
     @Autowired
-    public MvcConfiguration(@NonNull StringToCourseConverter stringToCourseConverter) {
+    public MvcConfiguration(
+        @NonNull StringToCourseConverter stringToCourseConverter,
+        @NonNull StringToSectionConverter stringToSectionConverter
+    ) {
         this.stringToCourseConverter = stringToCourseConverter;
+        this.stringToSectionConverter = stringToSectionConverter;
     }
 
     /**
@@ -38,5 +49,6 @@ public class MvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(stringToCourseConverter);
+        registry.addConverter(stringToSectionConverter);
     }
 }

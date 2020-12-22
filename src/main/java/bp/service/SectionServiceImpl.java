@@ -5,6 +5,7 @@ import bp.exception.section.SectionConstraintException;
 import bp.repository.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,6 +64,14 @@ public class SectionServiceImpl implements SectionService {
         }
 
         return section;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveSection(@NonNull Section section) {
+        repository.save(section);
     }
 
     /**
