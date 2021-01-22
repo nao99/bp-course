@@ -1,7 +1,9 @@
 package bp.course.service;
 
 import bp.course.api.model.course.CourseCreateDto;
+import bp.course.api.model.course.CourseUpdateDto;
 import bp.course.api.model.section.SectionCreateDto;
+import bp.course.exception.course.CourseNotFoundException;
 import bp.course.model.Course;
 import bp.course.model.Section;
 import bp.course.repository.CourseRepository;
@@ -40,7 +42,8 @@ public class CourseServiceImpl implements CourseService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Course> getCourse(Long id) {
+    @NonNull
+    public Optional<Course> getCourse(@NonNull Long id) {
         return repository.findById(id);
     }
 
@@ -48,7 +51,8 @@ public class CourseServiceImpl implements CourseService {
      * {@inheritDoc}
      */
     @Override
-    public Course createCourse(CourseCreateDto courseCreateDto) {
+    @NonNull
+    public Course createCourse(@NonNull CourseCreateDto courseCreateDto) {
         Course course = new Course(courseCreateDto.getName(), courseCreateDto.getDescription());
         for (SectionCreateDto sectionCreateDto : courseCreateDto.getSections()) {
             Section section = new Section(sectionCreateDto.getName(), sectionCreateDto.getDescription());
@@ -58,5 +62,53 @@ public class CourseServiceImpl implements CourseService {
         repository.save(course);
 
         return course;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateCourse(
+        @NonNull Long courseId,
+        @NonNull CourseUpdateDto courseUpdateDto
+    ) throws CourseNotFoundException {
+        Optional<Course> courseOptional = repository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            throw new CourseNotFoundException(String.format("Course with id \"%d\" not found", courseId));
+        }
+
+        Course course = courseOptional.get();
+        if (null != courseUpdateDto.getName()) {
+            course.rename(courseUpdateDto.getName());
+        }
+
+        if (null != courseUpdateDto.getDescription()) {
+            course.changeDescription(courseUpdateDto.getDescription());
+        }
+
+        repository.save(course);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @NonNull
+    public Section addSectionToCourse(
+        @NonNull Long courseId,
+        @NonNull SectionCreateDto sectionCreateDto
+    ) throws CourseNotFoundException {
+        Optional<Course> courseOptional = repository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            throw new CourseNotFoundException(String.format("Course with id \"%d\" not found", courseId));
+        }
+
+        Course course = courseOptional.get();
+        Section section = new Section(sectionCreateDto.getName(), sectionCreateDto.getDescription());
+
+        course.addSection(section);
+        repository.save(course);
+
+        return section;
     }
 }

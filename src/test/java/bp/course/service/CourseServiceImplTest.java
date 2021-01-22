@@ -1,7 +1,9 @@
 package bp.course.service;
 
 import bp.course.api.model.course.CourseCreateDto;
+import bp.course.api.model.course.CourseUpdateDto;
 import bp.course.api.model.section.SectionCreateDto;
+import bp.course.exception.course.CourseNotFoundException;
 import bp.course.model.Course;
 import bp.course.model.Section;
 import bp.course.repository.CourseRepository;
@@ -12,8 +14,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -92,5 +96,113 @@ public class CourseServiceImplTest {
 
         assertEquals(sectionCreateDto.getName(), section.getName());
         assertEquals(sectionCreateDto.getDescription(), section.getDescription());
+    }
+
+    /**
+     * Test for {@link CourseServiceImpl#updateCourse(Long, CourseUpdateDto)}
+     */
+    @Test
+    public void updateCourse() throws Exception {
+        // given
+        Course course = new Course("Chemistry", "Chemistry it's a cool");
+        Long courseId = 1L;
+
+        CourseUpdateDto courseUpdateDto = new CourseUpdateDto();
+        courseUpdateDto.setName("Math");
+        courseUpdateDto.setDescription("Math it's a cool");
+
+        // when
+        when(repositoryMock.findById(courseId))
+            .thenReturn(Optional.of(course));
+
+        verify(repositoryMock, atMostOnce())
+            .findById(courseId);
+
+        verify(repositoryMock, atMostOnce())
+            .save(any());
+
+        service.updateCourse(courseId, courseUpdateDto);
+
+        // then
+        assertEquals(courseUpdateDto.getName(), course.getName());
+        assertEquals(courseUpdateDto.getDescription(), course.getDescription());
+    }
+
+    /**
+     * Test for {@link CourseServiceImpl#updateCourse(Long, CourseUpdateDto)}
+     */
+    @Test
+    public void updateCourseWhenCourseNotFound() throws Exception {
+        // given
+        Long courseId = 1L;
+
+        CourseUpdateDto courseUpdateDto = new CourseUpdateDto();
+        courseUpdateDto.setName("Math");
+        courseUpdateDto.setDescription("Math it's a cool");
+
+        // when / then
+        when(repositoryMock.findById(courseId))
+            .thenReturn(Optional.empty());
+
+        verify(repositoryMock, atMostOnce())
+            .findById(courseId);
+
+        assertThrows(CourseNotFoundException.class, () -> service.updateCourse(courseId, courseUpdateDto));
+    }
+
+    /**
+     * Test for {@link CourseServiceImpl#addSectionToCourse(Long, SectionCreateDto)}
+     */
+    @Test
+    public void addSectionToCourse() throws Exception {
+        // given
+        Course course = new Course("Chemistry", "Chemistry it's a cool");
+        Long courseId = 1L;
+
+        SectionCreateDto sectionCreateDto = new SectionCreateDto();
+        sectionCreateDto.setName("Lagrange equations");
+        sectionCreateDto.setDescription("Lagrange equations it's a cool");
+
+        int courseSectionsCountBeforeAdding = course.getSections().size();
+
+        // when
+        when(repositoryMock.findById(courseId))
+            .thenReturn(Optional.of(course));
+
+        verify(repositoryMock, atMostOnce())
+            .findById(courseId);
+
+        verify(repositoryMock, atMostOnce())
+            .save(any());
+
+        Section section = service.addSectionToCourse(courseId, sectionCreateDto);
+
+        // then
+        assertEquals(courseSectionsCountBeforeAdding + 1, course.getSections().size());
+
+        assertEquals(section.getName(), sectionCreateDto.getName());
+        assertEquals(section.getDescription(), sectionCreateDto.getDescription());
+    }
+
+    /**
+     * Test for {@link CourseServiceImpl#addSectionToCourse(Long, SectionCreateDto)}
+     */
+    @Test
+    public void addSectionToCourseWhenCourseNotFound() throws Exception {
+        // given
+        Long courseId = 1L;
+
+        SectionCreateDto sectionCreateDto = new SectionCreateDto();
+        sectionCreateDto.setName("Lagrange equations");
+        sectionCreateDto.setDescription("Lagrange equations it's a cool");
+
+        // when / then
+        when(repositoryMock.findById(courseId))
+            .thenReturn(Optional.empty());
+
+        verify(repositoryMock, atMostOnce())
+            .findById(courseId);
+
+        assertThrows(CourseNotFoundException.class, () -> service.addSectionToCourse(courseId, sectionCreateDto));
     }
 }
