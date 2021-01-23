@@ -2,7 +2,12 @@ package bp.course.controller;
 
 import bp.course.api.model.course.CourseCreateDto;
 import bp.course.api.model.course.CourseDto;
+import bp.course.api.model.course.CourseUpdateDto;
+import bp.course.api.model.section.SectionCreateDto;
+import bp.course.api.model.section.SectionDto;
+import bp.course.exception.course.CourseNotFoundException;
 import bp.course.model.Course;
+import bp.course.model.Section;
 import bp.course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,5 +81,58 @@ public class CourseController {
         CourseDto courseDto = new CourseDto(course);
 
         return ResponseEntity.ok(courseDto);
+    }
+
+    /**
+     * API method to update a {@link Course}
+     *
+     * @param courseId        a course id
+     * @param courseUpdateDto a course update DTO
+     *
+     * @return empty response with 204 status code
+     * @throws ResponseStatusException with 404 status code if course was not found
+     */
+    @PutMapping(name = "api_v1.0_courses_update", path = "/{courseId:\\d+}")
+    @NonNull
+    public ResponseEntity<Void> updateCourse(
+        @PathVariable("courseId") String courseId,
+        @Valid @RequestBody CourseUpdateDto courseUpdateDto
+    ) {
+        try {
+            service.updateCourse(Long.parseLong(courseId), courseUpdateDto);
+        } catch (CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+        return ResponseEntity.noContent()
+            .build();
+    }
+
+    /**
+     * API method to add a new {@link Section} to a {@link Course}
+     *
+     * @param courseId         a course id
+     * @param sectionCreateDto a section create DTO
+     *
+     * @return an added section
+     * @throws ResponseStatusException with 404 status code if course was not found
+     */
+    @PostMapping(name = "api_v1.0_courses_sections_add", path = "/{courseId:\\d+}/sections/")
+    @NonNull
+    public ResponseEntity<SectionDto> addSectionToCourse(
+        @PathVariable("courseId") String courseId,
+        @Valid @RequestBody SectionCreateDto sectionCreateDto
+    ) {
+        Section section;
+
+        try {
+            section = service.addSectionToCourse(Long.parseLong(courseId), sectionCreateDto);
+        } catch (CourseNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+
+        SectionDto sectionDto = new SectionDto(section);
+
+        return ResponseEntity.ok(sectionDto);
     }
 }
