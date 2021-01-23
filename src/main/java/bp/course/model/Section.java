@@ -6,6 +6,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.time.OffsetDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Section class
@@ -47,6 +49,12 @@ public class Section {
     private OffsetDateTime createdAt;
 
     /**
+     * Lessons of this section
+     */
+    @NonNull
+    private Set<Lesson> lessons;
+
+    /**
      * Section constructor
      *
      * @param name        a section name
@@ -56,6 +64,7 @@ public class Section {
         this.name = name;
         this.description = description;
 
+        this.lessons = new LinkedHashSet<>();
         this.createdAt = OffsetDateTime.now();
     }
 
@@ -110,6 +119,29 @@ public class Section {
     }
 
     @NonNull
+    public Set<Lesson> getLessons() {
+        return lessons;
+    }
+
+    /**
+     * Adds a new {@link Lesson} to lessons collection
+     *
+     * @param lesson a new lesson
+     */
+    public void addLesson(@NonNull Lesson lesson) {
+        lessons.add(lesson);
+    }
+
+    /**
+     * Removes a {@link Lesson} from lessons collection
+     *
+     * @param lesson a lesson to remove
+     */
+    public void removeLesson(@NonNull Lesson lesson) {
+        lessons.remove(lesson);
+    }
+
+    @NonNull
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
@@ -124,8 +156,8 @@ public class Section {
         }
 
         Section section = (Section) other;
-        if (null != section.id && null != this.id) {
-            return section.id.equals(this.id);
+        if (null != section.id && null != id) {
+            return section.id.equals(id);
         }
 
         return other == this;
@@ -138,16 +170,16 @@ public class Section {
     public int hashCode() {
         int hash = 17;
 
-        if (null != this.id) {
-            hash = 31 * hash + this.id.hashCode();
+        if (null != id) {
+            hash = 31 * hash + id.hashCode();
         }
 
-        if (null != this.description) {
-            hash = 31 * hash + this.description.hashCode();
+        if (null != description) {
+            hash = 31 * hash + description.hashCode();
         }
 
-        hash = 31 * hash + this.name.hashCode();
-        hash = 31 * hash + this.createdAt.hashCode();
+        hash = 31 * hash + name.hashCode();
+        hash = 31 * hash + createdAt.hashCode();
 
         return hash;
     }
