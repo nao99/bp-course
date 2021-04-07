@@ -110,4 +110,70 @@ public class SectionTest {
         // then
         assertNull(section.getDescription());
     }
+
+    /**
+     * Test for {@link Section#addLesson(Lesson)}
+     */
+    @Test
+    public void addNewLesson() throws Exception {
+        // given
+        Section section = new Section("Some name", "Old description");
+        Lesson lesson = new Lesson("Fundamental principle", "Fundamental principles are...");
+
+        // when
+        section.addLesson(lesson);
+
+        // then
+        assertEquals(1, section.getLessons().size());
+    }
+
+    /**
+     * Test for {@link Section#addLesson(Lesson)}
+     */
+    @Test
+    public void addDuplicatedLesson() throws Exception {
+        // given
+        Section section = new Section("Some name", "Old description");
+        Lesson lesson = new Lesson("Fundamental principle", "Fundamental principles are...");
+
+        // when
+        section.addLesson(lesson);
+        section.addLesson(lesson);
+
+        // then
+        assertEquals(1, section.getLessons().size());
+    }
+
+    /**
+     * Test for {@link Section#removeLesson(Lesson)}
+     */
+    @Test
+    public void removeOldLesson() throws Exception {
+        // given
+        Section section = new Section("Some name", "Old description");
+        Lesson lesson = new Lesson("Fundamental principle", "Fundamental principles are...");
+
+        // when
+        section.addLesson(lesson);
+        section.removeLesson(lesson);
+
+        // then
+        assertEquals(0, section.getLessons().size());
+    }
+
+    /**
+     * Test for {@link Section#removeLesson(Lesson)}
+     */
+    @Test
+    public void removeUnknownLesson() throws Exception {
+        // given
+        Section section = new Section("Some name", "Old description");
+        Lesson lesson = new Lesson("Fundamental principle", "Fundamental principles are...");
+
+        // when
+        section.removeLesson(lesson);
+
+        // then
+        assertEquals(0, section.getLessons().size());
+    }
 }
